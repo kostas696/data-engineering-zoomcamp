@@ -110,6 +110,7 @@ docker-compose up -d
 
 ### **3️⃣ Run the ETL Pipeline**
 - Execute **`06_gcp_taxi.yaml`** in **Kestra UI**.
+- Execute **`06_gcp_taxi_scheduled`** in **Kestra UI**.
 - Run **Backfill Execution** to load all 2020 data.
 
 ### **4️⃣ Verify in BigQuery**
