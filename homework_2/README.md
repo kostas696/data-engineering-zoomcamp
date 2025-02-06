@@ -9,7 +9,7 @@ This repository contains our **Kestra workflow** and **BigQuery ETL pipeline** f
 ✅ **Answer:** **128.3 MB**
 
 🖼 **Screenshot:**
-![Yellow Taxi December 2020 File Size](screenshots\question1.PNG)
+![Yellow Taxi December 2020 File Size](https://github.com/kostas696/data-engineering-zoomcamp/blob/main/homework_2/screenshots/question1.PNG)
 
 **Steps to Verify:**
 1. Executed the `06_gcp_taxi.yaml` flow in **Kestra**.
@@ -35,7 +35,7 @@ This repository contains our **Kestra workflow** and **BigQuery ETL pipeline** f
 ✅ **Answer:** **24,648,499**
 
 🖼 **Screenshot:**
-![Yellow Taxi 2020 Row Count](screenshots\question3.JPG)
+![Yellow Taxi 2020 Row Count](https://github.com/kostas696/data-engineering-zoomcamp/blob/main/homework_2/screenshots\question3.JPG)
 
 **Steps to Verify:**
 1. Ran **Kestra flow** to upload data to **BigQuery**.
@@ -52,7 +52,7 @@ This repository contains our **Kestra workflow** and **BigQuery ETL pipeline** f
 ✅ **Answer:** **1,734,051**
 
 🖼 **Screenshot:**
-![Green Taxi 2020 Row Count](screenshots\question4.JPG)
+![Green Taxi 2020 Row Count](https://github.com/kostas696/data-engineering-zoomcamp/blob/main/homework_2/screenshots\question4.JPG)
 
 **Steps to Verify:**
 1. Ran **Kestra flow** to process Green Taxi data.
@@ -69,7 +69,7 @@ This repository contains our **Kestra workflow** and **BigQuery ETL pipeline** f
 ✅ **Answer:** **1,925,152**
 
 🖼 **Screenshot:**
-![Yellow Taxi March 2021 Row Count](screenshots\question5.JPG)
+![Yellow Taxi March 2021 Row Count](https://github.com/kostas696/data-engineering-zoomcamp/blob/main/homework_2/screenshots\question5.JPG)
 
 **Steps to Verify:**
 1. Queried BigQuery:
