@@ -3,7 +3,7 @@
 ## 🚀 Project Overview
 This project involves processing **Yellow Taxi Trip Records (Jan - June 2024)** by:
 - **Downloading** Parquet files from NYC Taxi Data.
-- **Uploading** them to **Google Cloud Storage (GCS)** in **`europe-west3`**.
+- **Uploading** them to **Google Cloud Storage (GCS)**.
 - **Creating External & Materialized Tables** in **BigQuery**.
 - **Answering analytical questions** based on SQL queries.
 
@@ -59,8 +59,8 @@ SELECT COUNT(DISTINCT PULocationID) AS unique_pu_locations
 FROM `platinum-lead-450019-j6.nyc_taxi_data.yellow_taxi_external`;
 ```
 📊 **Bytes Read:**
-- **External Table:** `18.82 MB`
-- **Materialized Table:** `47.60 MB`
+- **External Table:** `0 MB`
+- **Materialized Table:** `155.12 MB`
 ✅ **Answer:** **0 MB for the External Table and 155.12 MB for the Materialized Table**
 
 🖼 **Screenshot:**
