@@ -5,55 +5,13 @@
 }}
 
 with green_tripdata as (
-    select 
-        tripid, 
-        vendorid, 
-        service_type,
-        ratecodeid, 
-        pickup_locationid, 
-        dropoff_locationid,
-        pickup_datetime, 
-        dropoff_datetime, 
-        store_and_fwd_flag, 
-        SAFE_CAST(passenger_count AS FLOAT64) AS passenger_count, 
-        trip_distance, 
-        trip_type, 
-        fare_amount, 
-        extra, 
-        mta_tax, 
-        tip_amount, 
-        tolls_amount, 
-        ehail_fee, 
-        improvement_surcharge, 
-        total_amount, 
-        payment_type, 
-        payment_type_description
+    select *, 
+        'Green' as service_type
     from {{ ref('stg_green_tripdata') }}
 ), 
 yellow_tripdata as (
-    select 
-        tripid, 
-        vendorid, 
-        service_type,
-        ratecodeid, 
-        pickup_locationid, 
-        dropoff_locationid,
-        pickup_datetime, 
-        dropoff_datetime, 
-        store_and_fwd_flag, 
-        SAFE_CAST(passenger_count AS FLOAT64) AS passenger_count,  
-        trip_distance, 
-        trip_type, 
-        fare_amount, 
-        extra, 
-        mta_tax, 
-        tip_amount, 
-        tolls_amount, 
-        ehail_fee, 
-        improvement_surcharge, 
-        total_amount, 
-        payment_type, 
-        payment_type_description
+    select *, 
+        'Yellow' as service_type
     from {{ ref('stg_yellow_tripdata') }}
 ), 
 trips_unioned as (
@@ -65,8 +23,7 @@ dim_zones as (
     select * from {{ ref('dim_zones') }}
     where borough != 'Unknown'
 )
-select 
-    trips_unioned.tripid, 
+select trips_unioned.tripid, 
     trips_unioned.vendorid, 
     trips_unioned.service_type,
     trips_unioned.ratecodeid, 
@@ -79,7 +36,7 @@ select
     trips_unioned.pickup_datetime, 
     trips_unioned.dropoff_datetime, 
     trips_unioned.store_and_fwd_flag, 
-    trips_unioned.passenger_count,  
+    trips_unioned.passenger_count, 
     trips_unioned.trip_distance, 
     trips_unioned.trip_type, 
     trips_unioned.fare_amount, 
