@@ -1,0 +1,15 @@
+bitcoin
+ethereum
+solana
+dogecoin
+cardano
+polkadot
+chainlink
+litecoin
+avalanche
+uniswap
+ripple
+stellar
+tron
+monero
+polygon
