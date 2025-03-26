@@ -6,14 +6,59 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
     ports:
       - 9092:9092
+    depends_on:
+      zookeeper:
+        condition: service_healthy
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  producer:
+    build:
+      context: ./data_ingestion
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=crypto-prices
+    volumes:
+      - ./data_ingestion/assets.txt:/app/assets.txt
+      - ./.env:/app/.env
+
+  kafka-consumer-gcs:
+    build:
+      context: .
+      dockerfile: gcs/Dockerfile
+    container_name: kafka-consumer-gcs
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_TOPIC=crypto-prices
+      - GCP_BUCKET_NAME=souf-de-zoomcamp-project
+      - GCP_BASE_PATH=crypto/raw
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/kafka-consumer-key.json
+    volumes:
+      - ./gcloud/kafka-consumer-key.json:/app/kafka-consumer-key.json:ro
