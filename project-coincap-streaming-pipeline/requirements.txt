@@ -1,11 +1,6 @@
-# Common
 python-dotenv==1.0.1
 websocket-client==1.6.1
 kafka-python==1.4.7
-
-
-# For GCS interaction
 google-cloud-storage==2.14.0
-
-# Optional: for testing and utilities
 pytest
+confluent-kafka==2.3.0
