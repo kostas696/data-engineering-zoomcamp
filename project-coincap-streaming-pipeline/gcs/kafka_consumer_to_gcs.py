@@ -3,9 +3,6 @@ import os
 from datetime import datetime
 from confluent_kafka import Consumer
 from google.cloud import storage
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Config
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "localhost:9092")
