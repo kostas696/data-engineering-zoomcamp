@@ -28,10 +28,10 @@ def write_to_gcs(data_batch):
     path = f"{GCP_FOLDER}/{now.strftime('%Y-%m-%d/%H')}/data_{now.strftime('%M%S')}.json"
     blob = bucket.blob(path)
     blob.upload_from_string(json.dumps(data_batch, indent=2), content_type='application/json')
-    print(f"✅ Uploaded {len(data_batch)} records to GCS: {path}")
+    print(f"✅ Uploaded {len(data_batch)} records to GCS: {path}", flush=True)
 
 def main():
-    print("📡 Listening to Kafka and writing to GCS...")
+    print("📡 Listening to Kafka and writing to GCS...", flush=True)
     batch = []
     batch_size = 50
 
@@ -40,7 +40,7 @@ def main():
         if msg is None:
             continue
         if msg.error():
-            print("❌ Error:", msg.error())
+            print("❌ Error:", msg.error(), flush=True)
             continue
 
         try:
@@ -52,12 +52,12 @@ def main():
                 batch = []
 
         except Exception as e:
-            print("❌ Failed to process message:", e)
+            print("❌ Failed to process message:", e, flush=True)
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("🛑 Stopping consumer...")
+        print("🛑 Stopping consumer...", flush=True)
     finally:
         consumer.close()
