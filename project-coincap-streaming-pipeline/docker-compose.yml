@@ -28,9 +28,9 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     healthcheck:
-      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/9092"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 10
 
   producer:
