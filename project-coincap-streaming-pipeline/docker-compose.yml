@@ -1,8 +1,9 @@
-version: '3.7'
-
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -16,22 +17,26 @@ services:
     image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     ports:
-      - 9092:9092
-    depends_on:
-      zookeeper:
-        condition: service_healthy
+      - "9092:9092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 60000
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
     healthcheck:
-      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/9092"]
+      test: ["CMD", "nc", "-z", "localhost", "9092"]
       interval: 10s
-      timeout: 10s
+      timeout: 5s
       retries: 10
+      start_period: 15s
 
   producer:
     build:
@@ -40,25 +45,29 @@ services:
       kafka:
         condition: service_healthy
     environment:
-      - KAFKA_BROKER=kafka:9092
-      - KAFKA_TOPIC=crypto-prices
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: crypto-prices
     volumes:
+      - ./wait-for-kafka.sh:/app/wait-for-kafka.sh
       - ./data_ingestion/assets.txt:/app/assets.txt
       - ./.env:/app/.env
+    restart: on-failure
 
-  kafka-consumer-gcs:
+  consumer:
     build:
       context: .
       dockerfile: gcs/Dockerfile
-    container_name: kafka-consumer-gcs
+    container_name: consumer
     depends_on:
       kafka:
         condition: service_healthy
     environment:
-      - KAFKA_BROKER=kafka:9092
-      - KAFKA_TOPIC=crypto-prices
-      - GCP_BUCKET_NAME=souf-de-zoomcamp-project
-      - GCP_BASE_PATH=crypto/raw
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/kafka-consumer-key.json
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: crypto-prices
+      GCP_BUCKET_NAME: souf-de-zoomcamp-project
+      GCP_BASE_PATH: crypto/raw
+      GOOGLE_APPLICATION_CREDENTIALS: /app/gcloud-key.json
     volumes:
-      - ./gcloud/kafka-consumer-key.json:/app/kafka-consumer-key.json:ro
+      - ./wait-for-kafka.sh:/app/wait-for-kafka.sh
+      - ./gcloud/kafka-consumer-key.json:/app/gcloud-key.json
+    restart: on-failure

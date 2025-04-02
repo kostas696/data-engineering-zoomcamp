@@ -1,11 +1,6 @@
-resource "google_storage_bucket" "raw_data" {
-  name          = var.raw_bucket_name
+resource "google_storage_bucket" "crypto_data_bucket" {
+  name          = var.bucket_name
   location      = var.location
-  force_destroy = true
-}
-
-resource "google_storage_bucket" "processed_data" {
-  name          = var.processed_bucket_name
-  location      = var.location
+  project       = var.project_id
   force_destroy = true
 }

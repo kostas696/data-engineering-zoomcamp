@@ -1,15 +1,11 @@
-variable "project_id" {
-  description = "The ID of the GCP project"
-  type        = string
+variable "bucket_name" {
+  type = string
 }
 
 variable "location" {
-  description = "The location for the GCS bucket"
-  type        = string
-  default     = "EU"
+  type = string
 }
 
-variable "bucket_name" {
-  description = "The name of the GCS bucket"
-  type        = string
+variable "project_id" {
+  type = string
 }
