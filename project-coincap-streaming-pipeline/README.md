@@ -30,7 +30,7 @@ Create a streaming pipeline that:
 
 ## Architecture
 
-![Architecture](images\crypto_pipeline_architecture.png)
+![Architecture](./images/crypto_pipeline_architecture.png)
 
 ---
 
@@ -212,7 +212,7 @@ Dashboard contains:
 
 Title: `Real-Time Crypto Streaming Dashboard`
 
-> Link to the dashboard: [reports\Looker_Studio_Reporting_-_4_14_25,_3_48 PM.pdf]
+> Link to the dashboard: (https://lookerstudio.google.com/reporting/dd8bb71c-9f81-4d92-a8c4-dedb135fcfe3)
 
 ---
 
