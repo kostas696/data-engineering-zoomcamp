@@ -1,7 +1,16 @@
+import os
+import logging
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, from_json
+from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StructField, StringType, LongType, DoubleType, TimestampType
-from pyspark.sql.functions import to_timestamp
+
+# Logging
+logging.basicConfig(level=logging.INFO)
+
+# Environment variables
+GCS_PATH = os.getenv("GCS_PATH", "gs://souf-de-zoomcamp-project/crypto/raw/*/*")
+BQ_TABLE = os.getenv("BQ_TABLE", "crypto_streaming.prices")
+TEMP_GCS_BUCKET = os.getenv("TEMP_GCS_BUCKET", "souf-de-zoomcamp-project")
 
 # Initialize Spark session
 spark = SparkSession.builder \
@@ -19,23 +28,22 @@ schema = StructType([
     StructField("timestamp", LongType(), True)
 ])
 
-# Read and parse NDJSON-style file from GCS
-input_path = "gs://souf-de-zoomcamp-project/crypto/raw/*/*"
-df = spark.read.schema(schema).json(input_path)
+# Read and parse NDJSON from GCS
+df = spark.read.schema(schema).json(GCS_PATH)
 
-# Cast types
+# Type casting
 df_cleaned = df \
     .withColumn("priceUsd", col("priceUsd").cast(DoubleType())) \
     .withColumn("time", (col("timestamp") / 1000).cast(TimestampType())) \
     .select("symbol", "priceUsd", "time")
 
-print(f"Number of records: {df_cleaned.count()}")
+logging.info(f"Number of records: {df_cleaned.count()}")
 df_cleaned.show(5, truncate=False)
 
 # Write to BigQuery
 df_cleaned.write \
     .format("bigquery") \
-    .option("table", "crypto_streaming.prices") \
-    .option("temporaryGcsBucket", "souf-de-zoomcamp-project") \
+    .option("table", BQ_TABLE) \
+    .option("temporaryGcsBucket", TEMP_GCS_BUCKET) \
     .mode("append") \
     .save()

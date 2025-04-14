@@ -3,13 +3,6 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.email import EmailOperator
 from airflow.utils.dates import days_ago
 from airflow.utils.trigger_rule import TriggerRule
-import os
-
-# Load environment variables
-SPARK_HOME = os.getenv("SPARK_HOME")
-SPARK_JARS = os.getenv("SPARK_JARS")
-SPARK_JOB_PATH = os.getenv("SPARK_JOB_PATH")
-VALIDATION_SCRIPT_PATH = os.getenv("VALIDATION_SCRIPT_PATH")
 
 # DAG default arguments
 default_args = {
@@ -33,17 +26,25 @@ with DAG(
     # Spark job to transform data and load to BigQuery
     spark_transform = BashOperator(
         task_id='spark_gcs_to_bq',
-        bash_command=f"""
-        {SPARK_HOME}/bin/spark-submit \
-        --jars {SPARK_JARS} \
-        {SPARK_JOB_PATH}
-        """
+        bash_command="""
+        $SPARK_HOME/bin/spark-submit \
+        --jars $SPARK_JARS \
+        $SPARK_JOB_PATH
+        """,
+        env={
+            "SPARK_HOME": "{{ var.value.SPARK_HOME }}",
+            "SPARK_JARS": "{{ var.value.SPARK_JARS }}",
+            "SPARK_JOB_PATH": "{{ var.value.SPARK_JOB_PATH }}"
+        }
     )
 
     # Validation step to ensure BQ was loaded
     validate_bq = BashOperator(
         task_id='validate_data_in_bq',
-        bash_command=f'python3 {VALIDATION_SCRIPT_PATH}',
+        bash_command="python3 $VALIDATION_SCRIPT_PATH",
+        env={
+            "VALIDATION_SCRIPT_PATH": "{{ var.value.VALIDATION_SCRIPT_PATH }}"
+        }
     )
 
     # Email alert if failure occurs
