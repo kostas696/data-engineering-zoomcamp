@@ -1,0 +1,30 @@
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environment files
+.env
+
+# IDE/editor files
+.vscode/
+*.code-workspace
+
+# OS-specific
+.DS_Store
+
+# Log files
+*.log
+
+# Data
+*.csv
+*.json
+
+# Virtual environments
+.venv/
+env/
+
+# Terraform files
+*.tfstate
+.terraform
